@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 16,
     color: '#BDBDBD',
-    outlineStyle: 'none',
   },
   titleText: {
     fontFamily: 'Roboto',

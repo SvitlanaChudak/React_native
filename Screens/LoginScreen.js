@@ -1,18 +1,27 @@
-import React from 'react';
-import {View, Text, TextInput, Pressable, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import {View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
 
 export const LoginScreen = () => {
+    const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+    const onLogin = () => {
+    console.log(`${email} + ${password}`);
+  };
+
   return (
-    <View style={styles.centeredView}>
+     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.centeredView}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}></KeyboardAvoidingView>
         <Text style={styles.titleText}>Увійти</Text>
         <View>
-            <TextInput placeholder="Адреса електронної пошти" style={styles.input}/>
-            <TextInput placeholder="Пароль" style={styles.input}/>
+            <TextInput placeholder="Адреса електронної пошти" value={email} onChangeText={setEmail} style={styles.input}/>
+            <TextInput placeholder="Пароль" value={password} onChangeText={setPassword} style={styles.input}/>
       </View>
-      <Pressable style={styles.button}><Text style={styles.buttonText}>Увійти</Text></Pressable>
+      <Pressable onPress={onLogin} style={styles.button}><Text style={styles.buttonText}>Увійти</Text></Pressable>
       <Pressable><Text style={styles.refText}>Немає акаунту? Зареєструватися</Text></Pressable>
     </View>
-
+</TouchableWithoutFeedback>
 )
 }
 

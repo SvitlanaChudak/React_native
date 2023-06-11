@@ -1,7 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
+
+import 'react-native-gesture-handler';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from 'expo-font';
 import { RegistrationScreen } from './Screens/RegistrationScreen';
 import { LoginScreen } from './Screens/LoginScreen';
+import { Home } from './Screens/Home';
+
+const MainStack = createStackNavigator();
 
 export default function App() {
 const [fontsLoaded] = useFonts({
@@ -12,13 +18,13 @@ const [fontsLoaded] = useFonts({
   }
 
   return (
-    <View style={styles.container}>
-      <ImageBackground source={require('./assets/bg_image.png')} style={styles.image}>
-      <RegistrationScreen />
-        <LoginScreen />
-        <StatusBar style="auto" />
-        </ImageBackground>
-    </View>
+    <NavigationContainer>
+      <MainStack.Navigator initialRouteName="Registration">
+        <MainStack.Screen name="Registration" component={RegistrationScreen} />
+        <MainStack.Screen name="Login" component={LoginScreen} />
+        <MainStack.Screen name="Home" component={Home}  />
+        </MainStack.Navigator>
+      </NavigationContainer>
   );
 }
 

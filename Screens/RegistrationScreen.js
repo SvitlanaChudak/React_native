@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import {View, Text, TextInput, Pressable, Image, StyleSheet, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
+import {View, Text, TextInput, Pressable, Image, ImageBackground, StatusBar, StyleSheet, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export const RegistrationScreen = () => {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
     const onRegister = () => {
-    console.log(`${login} + ${email} + ${password}`);
+      console.log(`${login} + ${email} + ${password}`);
+      navigation.navigate("Home");
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+<ImageBackground source={require('../assets/bg_image.png')} style={styles.image}>
+          <StatusBar style="auto" />
       <View style={styles.centeredView}>
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}></KeyboardAvoidingView>
       <View style={styles.avatarBox}></View>
@@ -24,13 +30,21 @@ export const RegistrationScreen = () => {
             <TextInput placeholder="Пароль" value={password} onChangeText={setPassword} style={styles.input}/>
       </View>
       <Pressable onPress={onRegister} style={styles.button}><Text style={styles.buttonText}>Зареєстуватися</Text></Pressable>
-      <Pressable><Text style={styles.refText}>Вже є акаунт? Увійти</Text></Pressable>
-      </View>
+      <Pressable onPress={() => navigation.navigate("Login")}><Text style={styles.refText}>Вже є акаунт? Увійти</Text></Pressable>
+          </View>
+          </ImageBackground>
+        </View>
       </TouchableWithoutFeedback>
 )
 }
 
 const styles = StyleSheet.create({
+   container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   centeredView: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -113,6 +127,11 @@ const styles = StyleSheet.create({
     top: 20,
     right: 115,
     display: 'none',
+  },
+    image: {
+flex: 1,
+width: null,
+height: null,
   },
 });
 

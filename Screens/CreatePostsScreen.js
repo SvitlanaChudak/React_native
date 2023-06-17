@@ -1,77 +1,95 @@
-import React, { useState, useEffect, useRef }from 'react';
-import { View, StatusBar, StyleSheet, Text, TextInput, Pressable, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect }from 'react';
+import { View, StatusBar, StyleSheet, Text, TextInput, Pressable, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
 import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
+
+const initialState = {
+  name: "",
+  place: "",
+};
 
 
-export const CreatePostsScreen = () => {
-    const navigation = useNavigation();
-
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+export const CreatePosts = ({navigation}) => {
+  const [camera, setCamera] = useState(null);
+  const [image, setImage] = useState(null);
+  const [location, setLocation] = useState("");
+   const [state, setState] = useState(initialState);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
-
-      setHasPermission(status === "granted");
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
     })();
   }, []);
 
-  if (hasPermission === null) {
-    return <View />;
+  const createPost = () => {
+    const dataPost = { ...state, image, location };
+    navigation.navigate("PostsScreen", dataPost);
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  
+  const takePhoto = async () => {
+    const image = await camera.takePictureAsync();
+    const location = await Location.getCurrentPositionAsync({});
+    setLocation(location.coords);
+    setImage(image.uri);
   }
 
-    return (
-    <View style={styles.container}>
-            <StatusBar style="auto" />
-                  <Camera
-        style={styles.camera}
-        type={type}
-        ref={setCameraRef}
-      ></Camera>
-            <View style={styles.photoBox} >
-                <TouchableOpacity
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
-            }}
+  const deletePost = () => {
+    setImage(null);
+    onChangeName(null);
+    onChangeLocation(null);
+  };
+
+  return (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"}></KeyboardAvoidingView>
+  <StatusBar style="auto" />
+        <View style={styles.photoBox} >
+
+            <Camera
+              style={styles.camera}
+              ref={setCamera}
           >
-                            <Pressable style={styles.photoButton} onPress={async () => {
-              if (cameraRef) {
-                const { uri } = await cameraRef.takePictureAsync();
-                await MediaLibrary.createAssetAsync(uri);
-              }
-            }}>
-                <Ionicons name="camera-outline" size={24} color="#BDBDBD" style={styles.exit} />
-                    </Pressable>
-                    </TouchableOpacity>
-            </View>
+            {image && (
+               <Image source={{ uri: image }} style={styles.camera} />
+            )}
+              <TouchableOpacity onPress={takePhoto}>
+
+                  <Ionicons name="camera-outline" size={24} color="#BDBDBD" style={styles.exit} />
+                
+              </TouchableOpacity>
+            </Camera>
+    
+          
+
+        </View>
+        {!image ?
+        <Text style={styles.cameraComment}>Завантажте фото</Text>
+        :
+          <Text style={styles.cameraComment}>Редагувати фото</Text>
+        }
             <View>
-            <Text>Завантажте фото</Text>
-            <TextInput placeholder="Назва..." />
-            <View>
-                <Pressable >
-                <Ionicons name="location-outline" size={24} color="#BDBDBD" style={styles.exit} />
-            </Pressable>
-                <TextInput placeholder="Місцевість..." />
+            
+            <TextInput placeholder="Назва..." style={styles.input} onChangeText={(value) =>
+            setState((prevState) => ({ ...prevState, name: value }))} value={state.name}/>
+            <View style={styles.searchSection}>
+                <Ionicons name="location-outline" size={24} color="#BDBDBD" style={styles.searchIcon} />
+                <TextInput placeholder="Місцевість..." style={styles.input} onChangeText={(value) =>
+            setState((prevState) => ({ ...prevState, place: value }))} value={state.place}></TextInput>
                 </View>
                 </View>
-            <Pressable style={styles.addPhotoButton} onPress={() => navigation.navigate("PostsScreen")}><Text>Опубліковати</Text></Pressable>
-            <Pressable>
+            <Pressable style={styles.addPhotoButton} onPress={createPost}><Text>Опубліковати</Text></Pressable>
+            <Pressable onPress={deletePost}>
                 <Ionicons name="trash-outline" size={24} color="#BDBDBD" style={styles.exit} />
-                </Pressable>
-    </View>
+          </Pressable>
+       
+      </View>
+      </TouchableWithoutFeedback>
     )
 }
 
@@ -79,8 +97,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        // alignItems: 'center',
-        // justifyContent: 'center',
+        alignItems: 'center',
     },
     photoBox: {
         width: 343,
@@ -107,5 +124,21 @@ marginBottom: 8,
         paddingBottom: 108,
         paddingLeft: 160,
         paddingRight: 160,
-    },
+  },
+  camera: {
+    flex: 1,
+  
+  },
+  input: {
+   marginTop: 30,
+    width: 343,
+    backgroundColor: "white",
+  },
+searchSection: {
+    flexDirection: 'row',
+  },
+searchIcon: {
+    paddingTop: 20,
+},
+
 })

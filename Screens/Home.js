@@ -4,22 +4,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, StyleSheet } from 'react-native';
 import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { CreatePostsScreen } from './CreatePostsScreen';
-import { PostsScreen } from './PostsScreen';
+import { CreatePosts } from './CreatePostsScreen';
+import {Posts} from './PostsScreen'
 
 
-function Posts() {
+
+function PostsScreen() {
   return (
-    <View style={styles.container}>
-      <PostsScreen/>
+    <View >
+      <Posts/>
       </View>
   );
 }
 
-function CreatePosts() {
+function CreatePostsScreen() {
   return (
     <View style={styles.container}>
-      <CreatePostsScreen/>
+      <CreatePosts/>
     </View>
   );
 }
@@ -40,10 +41,10 @@ export const Home = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === "Posts") {
+                    if (route.name === "PostsScreen") {
                         iconName = "grid-outline"
                     }
-                    if (route.name === "CreatePosts") {
+                    if (route.name === "CreatePostsScreen") {
                         iconName = "add-outline"
                     }
                     if (route.name === "ProfileScreen") {
@@ -70,14 +71,14 @@ export const Home = () => {
   ]
             })}
     >
-      <Tabs.Screen name="Posts" component={Posts} options={{
+      <Tabs.Screen name="PostsScreen" component={PostsScreen} options={{
           title: "Публікації", headerRight: () => (
             <Pressable onPress={() => navigation.navigate("Login")}>
               <Ionicons name="exit-outline" size={24} color="#BDBDBD" style={styles.exit} />
             </Pressable>
           ),
         }}/>
-        <Tabs.Screen name="CreatePosts" component={CreatePosts} options={{
+        <Tabs.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{
           title: "Створити публікацію"
         }} />
       <Tabs.Screen name="ProfileScreen" component={ProfileScreen} options={{
@@ -99,5 +100,6 @@ const styles = StyleSheet.create({
     },
     exit: {
         marginRight: 16,
-    },
+  },
+
 });

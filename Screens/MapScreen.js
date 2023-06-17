@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 export const MapScreen = () => {
@@ -8,15 +8,14 @@ export const MapScreen = () => {
     <View style={styles.container}>
       <MapView
         style={styles.mapStyle}
-        region={{
-          ...location,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+        initialRegion={{
+          latitude: 50.516339,
+          longitude: 30.602185,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.006,
         }}
       >
-        {location && (
-          <Marker title="I am here" coordinate={location} description="Hello" />
-        )}
+          <Marker coordinate={{latitude: 50.516339, longitude: 30.602185}} />
       </MapView>
     </View>
   );
@@ -27,7 +26,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mapStyle: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+flex: 1,
   },
 });

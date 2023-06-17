@@ -9,7 +9,6 @@ export const RegistrationScreen = () => {
   const navigation = useNavigation();
 
     const onRegister = () => {
-      console.log(`${login} + ${email} + ${password}`);
       navigation.navigate("Home");
   };
 

@@ -9,7 +9,6 @@ export const LoginScreen = () => {
   const navigation = useNavigation();
 
     const onLogin = () => {
-      console.log(`${email} + ${password}`);
       navigation.navigate("Home");
   };
 

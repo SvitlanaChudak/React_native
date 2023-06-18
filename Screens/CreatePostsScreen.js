@@ -16,16 +16,6 @@ export const CreatePosts = ({navigation}) => {
   const [location, setLocation] = useState("");
    const [state, setState] = useState(initialState);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
-      }
-    })();
-  }, []);
-
   const createPost = () => {
     const dataPost = { ...state, image, location };
     navigation.navigate("PostsScreen", dataPost);
@@ -44,6 +34,16 @@ export const CreatePosts = ({navigation}) => {
     onChangeLocation(null);
   };
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+    })();
+  }, []);
+
   return (
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -51,10 +51,7 @@ export const CreatePosts = ({navigation}) => {
   <StatusBar style="auto" />
         <View style={styles.photoBox} >
 
-            <Camera
-              style={styles.camera}
-              ref={setCamera}
-          >
+            <Camera style={styles.camera} ref={setCamera}>
             {image && (
                <Image source={{ uri: image }} style={styles.camera} />
             )}

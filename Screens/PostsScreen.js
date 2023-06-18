@@ -9,10 +9,10 @@ import { useNavigation } from "@react-navigation/native";
 export const Posts = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params])
+    if (route?.params) {
+      setPosts((prevState) => [...prevState, route?.params])
     }
-  }, [route.params])
+  }, [route?.params])
 
   return (
     <View style={styles.container}>
